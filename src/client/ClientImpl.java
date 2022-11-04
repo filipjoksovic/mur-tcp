@@ -5,38 +5,50 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ClientImpl implements Client {
 
-    String ip;
-    int port;
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private final int port;
 
-    public ClientImpl(String ip, int port) {
-        this.ip = ip;
+    Socket socket = null;
+
+    PrintWriter out = null;
+    BufferedReader in = null;
+    Scanner sc = null;
+
+    public ClientImpl(int port) {
         this.port = port;
     }
 
-    @Override
-    public void startConnection() throws IOException {
-        clientSocket = new Socket(ip, port);
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    public void start() throws IOException {
+        socket = new Socket("localhost", this.port);
+        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        sc = new Scanner(System.in);
+
+        keepConnection();
     }
 
-    @Override
-    public String sendMessage(String msg) throws IOException {
-        out.println(msg);
-        String resp = in.readLine();
-        return resp;
+    public void keepConnection() throws IOException {
+        while (true) {
+            String message = sc.nextLine();
+            out.println(message);
+
+            String response = in.readLine();
+            System.out.println(response.replace('#', '\n'));
+
+            if (message.equals("bye")) {
+                System.out.println("Shutting down.");
+                break;
+            }
+        }
+
     }
 
-    @Override
-    public void stopConnection() throws IOException {
-        in.close();
+    public void stop() throws IOException {
         out.close();
-        clientSocket.close();
+        in.close();
+        socket.close();
     }
 }

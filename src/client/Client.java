@@ -3,9 +3,11 @@ package client;
 import java.io.IOException;
 
 public interface Client {
-    public void startConnection() throws IOException;
 
-    public String sendMessage(String msg) throws IOException;
+    void start() throws IOException;
 
-    public void stopConnection() throws IOException;
+    void stop() throws IOException;
+
+    void keepConnection() throws IOException;
+
 }
