@@ -50,8 +50,13 @@ public class ServerImpl implements Server {
     public void handleConnection() throws IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         while (true) {
             String received;
-            received = this.in.readLine();
-
+            try {
+                received = this.in.readLine();
+            }
+            catch(SocketException ex){
+                System.out.println("Client disconnected");
+                received = "bye";
+            }
             if (received.equals("bye")) {
                 break;
             }
@@ -93,8 +98,13 @@ public class ServerImpl implements Server {
     }
 
     public String chess(String init) {
+
         String[] parsed = init.split(" ");
         StringBuilder builtResult = new StringBuilder();
+
+        if(init.isBlank() || init.isEmpty() || parsed.length != 6){
+            return "Invalid data format. Try again with correct data";
+        }
 
         //create matrix
         for (String row : parsed[0].split("/")) {

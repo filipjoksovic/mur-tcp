@@ -8,6 +8,7 @@ public class Main {
             server.start();
         } catch (Exception e) {
             System.out.println("Exception ocurred: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             server.stop();
         }

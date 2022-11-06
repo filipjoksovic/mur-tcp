@@ -31,6 +31,7 @@ public class ClientImpl implements Client {
     }
 
     public void keepConnection() throws IOException {
+        System.out.println("Started client on " + this.port);
         while (true) {
             String message = sc.nextLine();
             out.println(message);
